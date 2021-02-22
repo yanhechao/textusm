@@ -51,19 +51,19 @@ closeNotification model =
 
 showWarningMessage : String -> Model -> Return Msg Model
 showWarningMessage msg model =
-    Return.return model (Task.perform identity (Task.succeed (ShowNotification (Warning msg))))
+    Return.return model (Task.perform identity <| Task.succeed <| ShowNotification <| Warning msg)
         |> Return.andThen closeNotification
 
 
 showInfoMessage : String -> Model -> Return Msg Model
 showInfoMessage msg model =
-    Return.return model (Task.perform identity (Task.succeed (ShowNotification (Info msg))))
+    Return.return model (Task.perform identity <| Task.succeed <| ShowNotification <| Info msg)
         |> Return.andThen closeNotification
 
 
 showErrorMessage : String -> Model -> Return Msg Model
 showErrorMessage msg model =
-    Return.return model (Task.perform identity (Task.succeed (ShowNotification (Error msg))))
+    Return.return model (Task.perform identity <| Task.succeed <| ShowNotification <| Error msg)
         |> Return.andThen closeNotification
 
 
@@ -185,6 +185,11 @@ setTitle title model =
     Return.singleton { model | title = Title.fromString <| title }
 
 
+startEditTitle : Model -> Return Msg Model
+startEditTitle model =
+    Return.return model <| Task.perform identity <| Task.succeed StartEditTitle
+
+
 setCurrentDiagram : Maybe DiagramItem -> Model -> Return Msg Model
 setCurrentDiagram currentDiagram model =
     Return.singleton { model | currentDiagram = currentDiagram }
@@ -208,3 +213,8 @@ setDiagramType type_ model =
                 model.diagramModel
                     |> DiagramModel.modelOfDiagramType.set type_
         }
+
+
+historyBack : Model -> Return Msg Model
+historyBack model =
+    Return.return model <| Nav.back model.key 1
